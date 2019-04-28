@@ -24,67 +24,79 @@ namespace BMP208OwnApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        //BMP280 BMP280;
         DispatcherTimer timer;
-        decimal temp = 0;
-        //float pressure = 0;
-        //float altitude = 0;
+        DispatcherTimer sendDB;
+        const float seaLevelPressure = 1013.25f;
+        float temp = 0;
+        float pressure = 0;
+        float altitude = 0;
+        BMP280 BMP280 = new BMP280();
 
         SqlCommand cmd;
         SqlConnection con = new SqlConnection(@"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331");
         public MainPage()
         {
             this.InitializeComponent();
+
+            //timer for temp
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(5000);
+            timer.Interval = TimeSpan.FromMilliseconds(1000);
             timer.Tick += Timer_Tick;
             timer.Start();
+            //
+
+            //timer to send db
+            sendDB = new DispatcherTimer();
+            sendDB.Interval = TimeSpan.FromSeconds(10);
+            sendDB.Tick += sendDB_Tick;
+            sendDB.Start();
+            //
             con.Open();
         }
+        protected override async void OnNavigatedTo(NavigationEventArgs navArgs)
+        {
+            Debug.WriteLine("MainPage::OnNavigatedTo");
+            try
+            {
+                await BMP280.Initialize();
+                ReadBMP280();
+            }
+
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+
+        }
+
         public void Timer_Tick(object sender, object e)
         {
-            temp++;
-            temper.Text = temp.ToString();
-            cmd = new SqlCommand("insert into [Table] (Temp,Pres,DateTime) values (@temp, @pres, @datetime)", con);
-            cmd.Parameters.AddWithValue("@temp", temp);
-            cmd.Parameters.AddWithValue("@pres", 0);
+            ReadBMP280();
+        }
+
+        public void sendDB_Tick(object sender, object e)
+        {
+            cmd = new SqlCommand("insert into [Temp] (Temp,Pres,Altit,DateTime) values (@temp, @pres, @altit, @datetime)", con);
+            cmd.Parameters.AddWithValue("@temp", temp.ToString("#####.00"));
+            cmd.Parameters.AddWithValue("@pres", pressure.ToString("#####.00"));
+            cmd.Parameters.AddWithValue("@altit", altitude.ToString("#####.00"));
             cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
             cmd.ExecuteNonQuery();
-
-            //try
-            //{
-            //    //Create a new object for our barometric sensor class
-            //    //BMP280 = new BMP280();
-            //    //Initialize the sensor
-            //    //await BMP280.Initialize();
-
-            //    //Create variables to store the sensor data: temperature, pressure and altitude. 
-            //    //Initialize them to 0.
-
-
-            //    //Create a constant for pressure at sea level. 
-            //    //This is based on your local sea level pressure (Unit: Hectopascal)
-            //    //const float seaLevelPressure = 1013.25f;
-
-            //    //Read 10 samples of the data
-
-            //        //temp = await BMP280.ReadTemperature();
-            //        //pressure = await BMP280.ReadPreasure();
-            //        //altitude = await BMP280.ReadAltitude(seaLevelPressure);
-
-            //        //Write the values to your debug console
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
-            //Debug.WriteLine("Temperature: " + temp.ToString() + " deg C");
-
-            //Debug.WriteLine("Pressure: " + pressure.ToString() + " Pa");
-            //pressuar.Text = pressure.ToString();
-            //Debug.WriteLine("Altitude: " + altitude.ToString() + " m");
         }
-       
+
+        public async void ReadBMP280()
+        {
+
+            temp = await BMP280.ReadTemperature();
+            pressure = await BMP280.ReadPreasure();
+            altitude = await BMP280.ReadAltitude(seaLevelPressure);
+
+            temper.Text = temp.ToString("####.00") + " deg C";
+            pressuar.Text = pressure.ToString("#####.00") + " Pa";
+            altitudes.Text = altitude.ToString("#####.00") + " m";
+
+        }
+
     }
 }
