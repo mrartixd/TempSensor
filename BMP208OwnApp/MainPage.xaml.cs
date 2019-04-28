@@ -24,25 +24,33 @@ namespace BMP208OwnApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const string ConnectionString = "SERVER = MSSQLLocalDB; DATABASE =  myDB;";
         //BMP280 BMP280;
         DispatcherTimer timer;
-        int temp = 0;
+        decimal temp = 0;
         //float pressure = 0;
         //float altitude = 0;
+
+        SqlCommand cmd;
+        SqlConnection con = new SqlConnection(@"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331");
         public MainPage()
         {
             this.InitializeComponent();
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
+            timer.Interval = TimeSpan.FromMilliseconds(5000);
             timer.Tick += Timer_Tick;
             timer.Start();
-            
+            con.Open();
         }
         public void Timer_Tick(object sender, object e)
         {
             temp++;
             temper.Text = temp.ToString();
+            cmd = new SqlCommand("insert into [Table] (Temp,Pres,DateTime) values (@temp, @pres, @datetime)", con);
+            cmd.Parameters.AddWithValue("@temp", temp);
+            cmd.Parameters.AddWithValue("@pres", 0);
+            cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+            cmd.ExecuteNonQuery();
+
             //try
             //{
             //    //Create a new object for our barometric sensor class

@@ -8,7 +8,7 @@
 
   <Identity
     Name="746962af-23ae-476d-9fec-83daa30ab3f8"
-    Publisher="CN=artix"
+    Publisher="CN=Artur"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="746962af-23ae-476d-9fec-83daa30ab3f8" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -45,5 +45,6 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="enterpriseAuthentication"/>
   </Capabilities>
 </Package>
