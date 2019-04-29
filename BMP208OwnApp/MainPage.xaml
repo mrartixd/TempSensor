@@ -9,12 +9,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <TextBlock HorizontalAlignment="Center" Margin="0,0,800,250" Text="Lux:" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock HorizontalAlignment="Center" Margin="0,0,800,0" Text="Temp:" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock HorizontalAlignment="Center" Margin="0,250,800,0" Text="Pres:" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock HorizontalAlignment="Center" Margin="0,500,800,0" Text="Altitude:" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
+        <TextBlock x:Name="luxer" HorizontalAlignment="Center" Margin="0,0,0,250" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock x:Name="temper" HorizontalAlignment="Center" Margin="0,0,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock x:Name="pressuar" HorizontalAlignment="Center" Margin="0,250,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
         <TextBlock x:Name="altitudes" HorizontalAlignment="Center" Margin="0,500,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72"/>
+        
 
     </Grid>
 </Page>
