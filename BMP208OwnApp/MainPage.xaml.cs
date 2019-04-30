@@ -6,6 +6,10 @@ using Windows.UI.Xaml.Navigation;
 using System.Data.SqlClient;
 using Windows.Devices.I2c;
 using Windows.Devices.Enumeration;
+using Windows.Devices.Gpio;
+using Windows.Security.ExchangeActiveSyncProvisioning;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BMP208OwnApp
 {
@@ -15,7 +19,8 @@ namespace BMP208OwnApp
         DispatcherTimer timer;
         DispatcherTimer sendDB;
         SqlCommand cmd;
-        SqlConnection con = new SqlConnection(@"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331");
+        const string connecttodb = @"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331";
+        SqlConnection con = new SqlConnection(connecttodb);
         //Driver and classes
         private const string I2C_CONTROLLER_NAME = "I2C1";
         private I2cDevice I2CDev;
@@ -30,13 +35,11 @@ namespace BMP208OwnApp
         float altitude = 0;
         const float seaLevelPressure = 1013.25f;
 
-       
+
         public MainPage()
         {
             this.InitializeComponent();
             InitializeI2CDevice();
-
-
             //timer for temp
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -50,8 +53,27 @@ namespace BMP208OwnApp
             sendDB.Tick += sendDB_Tick;
             sendDB.Start();
             //
+
             con.Open();
         }
+
+
+        private static bool IsServerConnected(string connectionString)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    return true;
+                }
+                catch (SqlException)
+                {
+                    return false;
+                }
+            }
+        }
+
 
         private async void InitializeI2CDevice()
         {
@@ -123,6 +145,19 @@ namespace BMP208OwnApp
             cmd.Parameters.AddWithValue("@altit", altitude.ToString("#####.00"));
             cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
             cmd.ExecuteNonQuery();
+            Debug.WriteLine("Send to DB: " + temp.ToString("#####.00") + ", " + pressure.ToString("#####.00") + ", " + altitude.ToString("#####.00"));
+
+            //blue
+            redpin.Write(GpioPinValue.Low);
+            greenpin.Write(GpioPinValue.Low);
+            bluepin.Write(GpioPinValue.High);
+            //wait
+            Task.Delay(2000).Wait();
+            redpin.Write(GpioPinValue.Low);
+            greenpin.Write(GpioPinValue.High);
+            bluepin.Write(GpioPinValue.Low);
+            //go back to green
+
         }
 
         public async void ReadBMP280()
@@ -131,7 +166,7 @@ namespace BMP208OwnApp
             temp = await BMP280.ReadTemperature();
             pressure = await BMP280.ReadPreasure();
             altitude = await BMP280.ReadAltitude(seaLevelPressure);
-           
+
 
             temper.Text = temp.ToString("####.00") + " deg C";
             pressuar.Text = pressure.ToString("#####.00") + " Pa";
@@ -139,5 +174,157 @@ namespace BMP208OwnApp
             luxer.Text = currentLux.ToString("#####.00" + " lux");
 
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            var gpio = GpioController.GetDefault();
+
+            // Show an error if there is no GPIO controller
+            if (gpio == null)
+            {
+                //string value
+                return;
+            }
+
+            var deviceModel = GetDeviceModel();
+            if (deviceModel == DeviceModel.RaspberryPi2)
+            {
+                // Use pin numbers compatible with documentation
+                const int RPI2_RED_LED_PIN = 5;
+                const int RPI2_GREEN_LED_PIN = 13;
+                const int RPI2_BLUE_LED_PIN = 6;
+
+                redpin = gpio.OpenPin(RPI2_RED_LED_PIN);
+                greenpin = gpio.OpenPin(RPI2_GREEN_LED_PIN);
+                bluepin = gpio.OpenPin(RPI2_BLUE_LED_PIN);
+            }
+            else
+            {
+                // take the first 3 available GPIO pins
+                var pins = new List<GpioPin>(3);
+                for (int pinNumber = 0; pinNumber < gpio.PinCount; pinNumber++)
+                {
+                    // ignore pins used for onboard LEDs
+                    switch (deviceModel)
+                    {
+                        case DeviceModel.DragonBoard410:
+                            if (pinNumber == 21 || pinNumber == 120)
+                                continue;
+                            break;
+                    }
+
+                    GpioPin pin;
+                    GpioOpenStatus status;
+                    if (gpio.TryOpenPin(pinNumber, GpioSharingMode.Exclusive, out pin, out status))
+                    {
+                        pins.Add(pin);
+                        if (pins.Count == 3)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (pins.Count != 3)
+                {
+                    //string value
+                    return;
+                }
+
+                redpin = pins[0];
+                greenpin = pins[1];
+                bluepin = pins[2];
+            }
+
+            redpin.Write(GpioPinValue.High);
+            redpin.SetDriveMode(GpioPinDriveMode.Output);
+            greenpin.Write(GpioPinValue.High);
+            greenpin.SetDriveMode(GpioPinDriveMode.Output);
+            bluepin.Write(GpioPinValue.High);
+            bluepin.SetDriveMode(GpioPinDriveMode.Output);
+
+            if (IsServerConnected(connecttodb) == true)
+            {
+                redpin.Write(GpioPinValue.Low);
+                greenpin.Write(GpioPinValue.High);
+                bluepin.Write(GpioPinValue.Low);
+                Debug.WriteLine("Connected to DB");
+            }
+            else
+            {
+                redpin.Write(GpioPinValue.High);
+                bluepin.Write(GpioPinValue.Low);
+                greenpin.Write(GpioPinValue.Low);
+                Debug.WriteLine("No connection to DB");
+            }
+
+        }
+
+        private void FlipLED()
+        {
+            Debug.Assert(redpin != null && bluepin != null && greenpin != null);
+
+            switch (ledStatus)
+            {
+                case LedStatus.Red:
+                    //turn on red
+                    redpin.Write(GpioPinValue.High);
+                    bluepin.Write(GpioPinValue.Low);
+                    greenpin.Write(GpioPinValue.Low);
+
+                    //LED.Fill = redBrush;
+                    ledStatus = LedStatus.Green;    // go to next state
+                    break;
+                case LedStatus.Green:
+
+                    //turn on green
+                    redpin.Write(GpioPinValue.Low);
+                    greenpin.Write(GpioPinValue.High);
+                    bluepin.Write(GpioPinValue.Low);
+
+                    //LED.Fill = greenBrush;
+                    ledStatus = LedStatus.Blue;     // go to next state
+                    break;
+                case LedStatus.Blue:
+                    //turn on blue
+                    redpin.Write(GpioPinValue.Low);
+                    greenpin.Write(GpioPinValue.Low);
+                    bluepin.Write(GpioPinValue.High);
+
+                    //LED.Fill = blueBrush;
+                    ledStatus = LedStatus.Red;      // go to next state
+                    break;
+            }
+        }
+
+        public enum DeviceModel { RaspberryPi2, MinnowBoardMax, DragonBoard410, Unknown };
+
+        static DeviceModel GetDeviceModel()
+        {
+            var deviceInfo = new EasClientDeviceInformation();
+            if (deviceInfo.SystemProductName.IndexOf("Raspberry", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return DeviceModel.RaspberryPi2;
+            }
+            else if (deviceInfo.SystemProductName.IndexOf("MinnowBoard", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return DeviceModel.MinnowBoardMax;
+            }
+            else if (deviceInfo.SystemProductName == "SBC")
+            {
+                return DeviceModel.DragonBoard410;
+            }
+            else
+            {
+                return DeviceModel.Unknown;
+            }
+        }
+
+        enum LedStatus { Red, Green, Blue };
+
+        private LedStatus ledStatus;
+        private GpioPin redpin;
+        private GpioPin greenpin;
+        private GpioPin bluepin;
     }
 }

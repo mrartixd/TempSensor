@@ -116,7 +116,7 @@ namespace BMP208OwnApp
 
             //Read the device signature
             bmp280.WriteRead(WriteBuffer, ReadBuffer);
-            Debug.WriteLine("BMP280 Signature: " + ReadBuffer[0].ToString());
+            Debug.WriteLine("BMP280 ID: " + ReadBuffer[0].ToString());
 
             //Verify the device signature
             if (ReadBuffer[0] != BMP280_Signature)
