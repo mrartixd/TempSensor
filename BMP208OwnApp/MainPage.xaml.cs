@@ -169,10 +169,14 @@ namespace BMP208OwnApp
 
 
             temper.Text = temp.ToString("####.00") + " deg C";
+            RadialProgressBarControl.Value = temp;
             pressuar.Text = pressure.ToString("#####.00") + " Pa";
+            pressurebar.Value = pressure;
             altitudes.Text = altitude.ToString("#####.00") + " m";
             luxer.Text = currentLux.ToString("#####.00" + " lux");
-
+            luxbar1.Value = currentLux;
+            luxbar2.Value = currentLux;
+            luxbar3.Value = currentLux;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -260,43 +264,6 @@ namespace BMP208OwnApp
 
         }
 
-        private void FlipLED()
-        {
-            Debug.Assert(redpin != null && bluepin != null && greenpin != null);
-
-            switch (ledStatus)
-            {
-                case LedStatus.Red:
-                    //turn on red
-                    redpin.Write(GpioPinValue.High);
-                    bluepin.Write(GpioPinValue.Low);
-                    greenpin.Write(GpioPinValue.Low);
-
-                    //LED.Fill = redBrush;
-                    ledStatus = LedStatus.Green;    // go to next state
-                    break;
-                case LedStatus.Green:
-
-                    //turn on green
-                    redpin.Write(GpioPinValue.Low);
-                    greenpin.Write(GpioPinValue.High);
-                    bluepin.Write(GpioPinValue.Low);
-
-                    //LED.Fill = greenBrush;
-                    ledStatus = LedStatus.Blue;     // go to next state
-                    break;
-                case LedStatus.Blue:
-                    //turn on blue
-                    redpin.Write(GpioPinValue.Low);
-                    greenpin.Write(GpioPinValue.Low);
-                    bluepin.Write(GpioPinValue.High);
-
-                    //LED.Fill = blueBrush;
-                    ledStatus = LedStatus.Red;      // go to next state
-                    break;
-            }
-        }
-
         public enum DeviceModel { RaspberryPi2, MinnowBoardMax, DragonBoard410, Unknown };
 
         static DeviceModel GetDeviceModel()
@@ -320,9 +287,7 @@ namespace BMP208OwnApp
             }
         }
 
-        enum LedStatus { Red, Green, Blue };
 
-        private LedStatus ledStatus;
         private GpioPin redpin;
         private GpioPin greenpin;
         private GpioPin bluepin;
