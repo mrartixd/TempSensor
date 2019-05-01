@@ -10,11 +10,16 @@ using Windows.Devices.Gpio;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace BMP208OwnApp
 {
     public sealed partial class MainPage : Page
     {
+        //Colors
+        SolidColorBrush whitecolor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        SolidColorBrush yellowcolor = new SolidColorBrush(Color.FromArgb(255, 255, 203, 90));
         //DB
         DispatcherTimer timer;
         DispatcherTimer sendDB;
@@ -35,11 +40,10 @@ namespace BMP208OwnApp
         float altitude = 0;
         const float seaLevelPressure = 1013.25f;
 
-
         public MainPage()
         {
             this.InitializeComponent();
-            InitializeI2CDevice();
+            
             //timer for temp
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -111,6 +115,15 @@ namespace BMP208OwnApp
             TSL2561Sensor.PowerUp();
 
             Debug.WriteLine("TSL2561 ID: " + TSL2561Sensor.GetId());
+            if(TSL2561Sensor.GetId() != 112)
+            {
+                tslsensor.Text = "Error";
+            }
+            else
+            {
+                tslsensor.Text = "2561";
+            }
+            
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs navArgs)
@@ -119,11 +132,13 @@ namespace BMP208OwnApp
             {
                 await BMP280.Initialize();
                 ReadBMP280();
+                bmpsensor.Text = "280";
             }
 
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                bmpsensor.Text = ex.Message;
             }
 
 
@@ -160,6 +175,32 @@ namespace BMP208OwnApp
 
         }
 
+
+        public void LuxMethod()
+        {
+            if (currentLux > 1000)
+            {
+                luxbar1.Foreground = whitecolor;
+                luxbar2.Foreground = whitecolor;
+                luxbar3.Foreground = whitecolor;
+            }
+            else
+            {
+                luxbar1.Foreground = yellowcolor;
+                luxbar2.Foreground = yellowcolor;
+                luxbar3.Foreground = yellowcolor;
+            }
+
+            if (currentLux <= 0.1)
+            {
+                lightblack.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                lightblack.Visibility = Visibility.Collapsed;
+            }
+        }
+
         public async void ReadBMP280()
         {
 
@@ -177,16 +218,18 @@ namespace BMP208OwnApp
             luxbar1.Value = currentLux;
             luxbar2.Value = currentLux;
             luxbar3.Value = currentLux;
+            LuxMethod();
         }
+
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var gpio = GpioController.GetDefault();
-
             // Show an error if there is no GPIO controller
             if (gpio == null)
             {
-                //string value
+                Debug.WriteLine("There is no GPIO controller on this device.");
+                gpiostatus.Text = "Check GPIO controller";
                 return;
             }
 
@@ -197,13 +240,14 @@ namespace BMP208OwnApp
                 const int RPI2_RED_LED_PIN = 5;
                 const int RPI2_GREEN_LED_PIN = 13;
                 const int RPI2_BLUE_LED_PIN = 6;
-
+                
                 redpin = gpio.OpenPin(RPI2_RED_LED_PIN);
                 greenpin = gpio.OpenPin(RPI2_GREEN_LED_PIN);
                 bluepin = gpio.OpenPin(RPI2_BLUE_LED_PIN);
             }
             else
             {
+               
                 // take the first 3 available GPIO pins
                 var pins = new List<GpioPin>(3);
                 for (int pinNumber = 0; pinNumber < gpio.PinCount; pinNumber++)
@@ -212,6 +256,7 @@ namespace BMP208OwnApp
                     switch (deviceModel)
                     {
                         case DeviceModel.DragonBoard410:
+                           
                             if (pinNumber == 21 || pinNumber == 120)
                                 continue;
                             break;
@@ -231,7 +276,7 @@ namespace BMP208OwnApp
 
                 if (pins.Count != 3)
                 {
-                    //string value
+                    Debug.WriteLine("Could not find 3 available pins. This sample requires 3 GPIO pins.");
                     return;
                 }
 
@@ -239,13 +284,16 @@ namespace BMP208OwnApp
                 greenpin = pins[1];
                 bluepin = pins[2];
             }
-
+            gpiostatus.Text = "OK!";
             redpin.Write(GpioPinValue.High);
             redpin.SetDriveMode(GpioPinDriveMode.Output);
             greenpin.Write(GpioPinValue.High);
             greenpin.SetDriveMode(GpioPinDriveMode.Output);
             bluepin.Write(GpioPinValue.High);
             bluepin.SetDriveMode(GpioPinDriveMode.Output);
+            //start initilize I2C
+            InitializeI2CDevice();
+            modelsbc.Text = deviceModel.ToString();
 
             if (IsServerConnected(connecttodb) == true)
             {

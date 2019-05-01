@@ -10,6 +10,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
 
     <Grid Width="1279.8" AutomationProperties.Level="95">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="17*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="480*"/>
@@ -18,33 +22,40 @@
             <ColumnDefinition Width="480*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock HorizontalAlignment="Left" Margin="35,0,0,458" Text="Luminosity " TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="1" />
-        <TextBlock HorizontalAlignment="Left" Margin="25,0,0,458" Text="Temperature" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50"/>
-        <TextBlock HorizontalAlignment="Left" Margin="65,0,0,458" Text="Pressure" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="2"/>
-        <TextBlock HorizontalAlignment="Left" Margin="70,0,0,458" Text="Altitude" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="3"/>
-        <TextBlock x:Name="luxer" HorizontalAlignment="Center" Margin="0,275,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="1"/>
-        <TextBlock x:Name="temper" Margin="0,275,0,0" Text="000" TextWrapping="Wrap" FontSize="50" Height="64" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBlock x:Name="pressuar" HorizontalAlignment="Center" Margin="0,275,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="2"/>
-        <TextBlock x:Name="altitudes" HorizontalAlignment="Center" Margin="0,275,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="50" Grid.Column="3"/>
+        <TextBlock HorizontalAlignment="Left" Margin="35,98,0,0" Text="Luminosity " TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="1" />
+        <TextBlock HorizontalAlignment="Left" Margin="25,98,0,0" Text="Temperature" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50"/>
+        <TextBlock HorizontalAlignment="Left" Margin="65,98,0,0" Text="Pressure" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="70,98,0,0" Text="Altitude" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="3"/>
+        <TextBlock x:Name="luxer" HorizontalAlignment="Center" Margin="0,464,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="1"/>
+        <TextBlock x:Name="temper" Margin="0,466,0,0" Text="000" TextWrapping="Wrap" FontSize="50" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="pressuar" HorizontalAlignment="Center" Margin="0,464,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="2"/>
+        <TextBlock x:Name="altitudes" HorizontalAlignment="Center" Margin="0,464,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="50" Grid.Column="3"/>
 
-        <Grid x:Name="tempshape" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,0,0,118">
-            <Ellipse HorizontalAlignment="Left" Height="236" VerticalAlignment="Top" Width="236" Stroke="#FF686868" StrokeThickness="35"/>
+        <Grid x:Name="tempshape" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,183,0,0">
+            <Ellipse HorizontalAlignment="Left" Height="236" VerticalAlignment="Top" Width="236" Stroke="#FF686868" StrokeThickness="20"/>
             <Ellipse HorizontalAlignment="Left" Height="79" Margin="79,79,0,0" VerticalAlignment="Top" Width="78" Stroke="#FF686868" StrokeThickness="15"/>
-            <controls:RadialProgressBar x:Name="RadialProgressBarControl" Value="0" Minimum="-40" Maximum="40" Thickness="20" Outline="Gray" Foreground="Red"/>
+            <TextBlock HorizontalAlignment="Center" Margin="0,45,0,0" Text="+40 -40" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" FontWeight="Bold"/>
+            <TextBlock HorizontalAlignment="Center" Margin="0,163,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="24" FontWeight="Bold"/>
+            <TextBlock HorizontalAlignment="Left" Margin="162,0,0,0" Text="-20" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+            <TextBlock HorizontalAlignment="Left" Margin="33,0,0,0" Text="+20" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+
+            <controls:RadialProgressBar x:Name="RadialProgressBarControl" Value="0" Minimum="-40" Maximum="40" Thickness="35" Outline="Gray" Foreground="Red"/>
         </Grid>
 
-        <Image x:Name="light" Grid.Column="1" Margin="74,214,73,332" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="174"/>
-        <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,0,0,275" VerticalAlignment="Center" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="10000">
+        <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174"/>
+        <Image x:Name="lightblack" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulbblack.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Collapsed"/>
+
+        <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-140"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="135,0,0,350" VerticalAlignment="Center" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="10000">
+        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Center" Height="20" Margin="0,175,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-90"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <ProgressBar x:Name="luxbar3" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="210,0,0,275" VerticalAlignment="Center" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="10000">
+        <ProgressBar x:Name="luxbar3" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="210,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-40"/>
             </ProgressBar.RenderTransform>
@@ -52,13 +63,22 @@
 
 
 
-        <Image x:Name="mount" Grid.Column="3" Margin="53,194,52,311" Stretch="Fill" Source="Assets/mountain.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="215" Height="215"/>
-        <Rectangle Grid.Column="3" HorizontalAlignment="Left" Height="11" Margin="25,65,0,0" VerticalAlignment="Center" Width="280" Fill="#FF686868"/>
-        <ProgressBar x:Name="pressurebar" Grid.Column="2" HorizontalAlignment="Left" Height="70" Margin="65,0,0,100" VerticalAlignment="Center" Width="200" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FF0CA42F" Maximum="200000">
+        <Image x:Name="mount" Grid.Column="3" Margin="0,194,0,0" Stretch="Fill" Source="Assets/mountain.png" HorizontalAlignment="Center" VerticalAlignment="Top" Width="215" Height="215"/>
+        <Rectangle Grid.Column="3" HorizontalAlignment="Center" Height="11" Margin="0,387,0,0" VerticalAlignment="Top" Width="270" Fill="#FF686868"/>
+        <ProgressBar x:Name="pressurebar" Grid.Column="2" HorizontalAlignment="Left" Height="70" Margin="65,275,0,0" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FF0CA42F" Maximum="280000">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-90"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
+        <TextBlock x:Name="modelsbc" Height="40" Grid.Row="1" Text="TextBlock" TextWrapping="Wrap" FontSize="20" Margin="116,0,1,0"/>
+        <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="Model SBC:" TextWrapping="Wrap" VerticalAlignment="Center" Width="105" FontSize="20" Margin="10,0,0,0"/>
+        <TextBlock x:Name="gpiostatus" Height="40" Grid.Row="1" Text="TextBlock" TextWrapping="Wrap" FontSize="20" Margin="65,3,1,-3" Grid.Column="1" FontFamily="Segoe UI"/>
+        <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="GPIO:" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" FontSize="20" Margin="10,3,0,0" Grid.Column="1"/>
+        <TextBlock x:Name="bmpsensor" Height="40" Grid.Row="1" Text="TextBlock" TextWrapping="Wrap" FontSize="20" Margin="65,3,1,-3" Grid.Column="2" FontFamily="Segoe UI"/>
+        <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="BMP:" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" FontSize="20" Margin="10,3,0,0" Grid.Column="2"/>
+        <TextBlock x:Name="tslsensor" Height="40" Grid.Row="1" Text="TextBlock" TextWrapping="Wrap" FontSize="20" Margin="65,3,1,-3" Grid.Column="3" FontFamily="Segoe UI"/>
+        <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="TSL:" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" FontSize="20" Margin="10,3,0,0" Grid.Column="3"/>
+
 
     </Grid>
 
