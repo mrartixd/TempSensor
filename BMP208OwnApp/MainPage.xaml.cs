@@ -168,11 +168,11 @@ namespace BMP208OwnApp
             bluepin.Write(GpioPinValue.High);
             //wait
             Task.Delay(2000).Wait();
+            //go back to green
             redpin.Write(GpioPinValue.Low);
             greenpin.Write(GpioPinValue.High);
             bluepin.Write(GpioPinValue.Low);
-            //go back to green
-
+  
         }
 
 
@@ -208,17 +208,31 @@ namespace BMP208OwnApp
             pressure = await BMP280.ReadPreasure();
             altitude = await BMP280.ReadAltitude(seaLevelPressure);
 
-
             temper.Text = temp.ToString("####.00") + " deg C";
             RadialProgressBarControl.Value = temp;
             pressuar.Text = pressure.ToString("#####.00") + " Pa";
             pressurebar.Value = pressure;
             altitudes.Text = altitude.ToString("#####.00") + " m";
             luxer.Text = currentLux.ToString("#####.00" + " lux");
+
             luxbar1.Value = currentLux;
             luxbar2.Value = currentLux;
             luxbar3.Value = currentLux;
+
             LuxMethod();
+
+            if(altitude <= 0)
+            {
+                rowaltitude.Margin = new Thickness(0, 400, 0, 0);
+            }
+            else if (altitude >= 200)
+            {
+                rowaltitude.Margin = new Thickness(0, 200, 0, 0);
+            }
+            else
+            {
+                rowaltitude.Margin = new Thickness(0, 400-altitude, 0, 0);
+            }
         }
 
 
@@ -285,6 +299,7 @@ namespace BMP208OwnApp
                 bluepin = pins[2];
             }
             gpiostatus.Text = "OK!";
+            //send high value to pins for RGB LED
             redpin.Write(GpioPinValue.High);
             redpin.SetDriveMode(GpioPinDriveMode.Output);
             greenpin.Write(GpioPinValue.High);

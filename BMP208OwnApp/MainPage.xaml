@@ -64,7 +64,7 @@
 
 
         <Image x:Name="mount" Grid.Column="3" Margin="0,194,0,0" Stretch="Fill" Source="Assets/mountain.png" HorizontalAlignment="Center" VerticalAlignment="Top" Width="215" Height="215"/>
-        <Rectangle Grid.Column="3" HorizontalAlignment="Center" Height="11" Margin="0,387,0,0" VerticalAlignment="Top" Width="270" Fill="#FF686868"/>
+        <Rectangle x:Name="rowaltitude" Grid.Column="3" HorizontalAlignment="Center" Height="11" Margin="0,400,0,0" VerticalAlignment="Top" Width="270" Fill="#FF686868"/>
         <ProgressBar x:Name="pressurebar" Grid.Column="2" HorizontalAlignment="Left" Height="70" Margin="65,275,0,0" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FF0CA42F" Maximum="280000">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-90"/>
