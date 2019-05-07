@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
+using Windows.System.Threading;
+using System.Data;
 
 namespace BMP208OwnApp
 {
@@ -20,30 +22,42 @@ namespace BMP208OwnApp
         //Colors
         SolidColorBrush whitecolor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
         SolidColorBrush yellowcolor = new SolidColorBrush(Color.FromArgb(255, 255, 203, 90));
+
         //DB
-        DispatcherTimer timer;
+        
         DispatcherTimer sendDB;
         SqlCommand cmd;
         const string connecttodb = @"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331";
         SqlConnection con = new SqlConnection(connecttodb);
-        //Driver and classes
+
+        //Driver sensors
         private const string I2C_CONTROLLER_NAME = "I2C1";
         private I2cDevice I2CDev;
         private TSL2561 TSL2561Sensor;
         BMP280 BMP280 = new BMP280();
+        DispatcherTimer timer;
+
         //Values
         private Boolean Gain = false;
         private uint MS = 0;
-        float temp = 0;
-        double currentLux = 0;
-        float pressure = 0;
-        float altitude = 0;
+        public static float temp = 0;
+        public static double currentLux = 0;
+        public static float pressure = 0;
+        public static float altitude = 0;
         const float seaLevelPressure = 1013.25f;
+
+        // Http Server
+        private HttpServer WebServer = null;
+
+        //pins
+        private GpioPin redpin;
+        private GpioPin greenpin;
+        private GpioPin bluepin;
 
         public MainPage()
         {
             this.InitializeComponent();
-            
+
             //timer for temp
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -56,12 +70,16 @@ namespace BMP208OwnApp
             sendDB.Interval = TimeSpan.FromSeconds(10);
             sendDB.Tick += sendDB_Tick;
             sendDB.Start();
-            //
 
+            //open con
             con.Open();
+
+            // Initialize and Start HTTP Server
+            WebServer = new HttpServer();
+            var asyncAction = ThreadPool.RunAsync((w) => { WebServer.StartServer(); });
         }
 
-
+        //check connection to SQL server
         private static bool IsServerConnected(string connectionString)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -77,7 +95,6 @@ namespace BMP208OwnApp
                 }
             }
         }
-
 
         private async void InitializeI2CDevice()
         {
@@ -115,7 +132,7 @@ namespace BMP208OwnApp
             TSL2561Sensor.PowerUp();
 
             Debug.WriteLine("TSL2561 ID: " + TSL2561Sensor.GetId());
-            if(TSL2561Sensor.GetId() != 112)
+            if (TSL2561Sensor.GetId() != 112)
             {
                 tslsensor.Text = "Error";
             }
@@ -123,7 +140,7 @@ namespace BMP208OwnApp
             {
                 tslsensor.Text = "2561";
             }
-            
+
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs navArgs)
@@ -131,7 +148,6 @@ namespace BMP208OwnApp
             try
             {
                 await BMP280.Initialize();
-                ReadBMP280();
                 bmpsensor.Text = "280";
             }
 
@@ -143,24 +159,28 @@ namespace BMP208OwnApp
 
 
         }
-        public void Timer_Tick(object sender, object e)
+        public async void Timer_Tick(object sender, object e)
         {
-            ReadBMP280();
+            temp = await BMP280.ReadTemperature();
+            pressure = await BMP280.ReadPreasure();
+            altitude = await BMP280.ReadAltitude(seaLevelPressure);
             // Retrive luminosity and update the screen
             uint[] Data = TSL2561Sensor.GetData();
-
             currentLux = TSL2561Sensor.GetLux(Gain, MS, Data[0], Data[1]);
+            WriteResults();
         }
 
         public void sendDB_Tick(object sender, object e)
         {
-            cmd = new SqlCommand("insert into [Temp] (Temp,Pres,Altit,DateTime) values (@temp, @pres, @altit, @datetime)", con);
+
+            cmd = new SqlCommand("insert into [Temp] (Temperature,Lux,Pressure,Altitude,DateTime) values (@temp, @lux, @pres, @altit, @datetime)", con);
             cmd.Parameters.AddWithValue("@temp", temp.ToString("#####.00"));
+            cmd.Parameters.AddWithValue("@lux", currentLux.ToString("#####.00"));
             cmd.Parameters.AddWithValue("@pres", pressure.ToString("#####.00"));
             cmd.Parameters.AddWithValue("@altit", altitude.ToString("#####.00"));
             cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
             cmd.ExecuteNonQuery();
-            Debug.WriteLine("Send to DB: " + temp.ToString("#####.00") + ", " + pressure.ToString("#####.00") + ", " + altitude.ToString("#####.00"));
+            Debug.WriteLine("Send to DB: Temp:" + temp.ToString("#####.00") + ", Lux:" + currentLux.ToString("#####.00") + ", Pres:" + pressure.ToString("#####.00") + ", Altit" + altitude.ToString("#####.00"));
 
             //blue
             redpin.Write(GpioPinValue.Low);
@@ -172,12 +192,15 @@ namespace BMP208OwnApp
             redpin.Write(GpioPinValue.Low);
             greenpin.Write(GpioPinValue.High);
             bluepin.Write(GpioPinValue.Low);
-  
-        }
 
+        }
 
         public void LuxMethod()
         {
+            luxbar1.Value = currentLux;
+            luxbar2.Value = currentLux;
+            luxbar3.Value = currentLux;
+
             if (currentLux > 1000)
             {
                 luxbar1.Foreground = whitecolor;
@@ -194,20 +217,21 @@ namespace BMP208OwnApp
             if (currentLux <= 0.1)
             {
                 lightblack.Visibility = Visibility.Visible;
+                luxbar1.Visibility = Visibility.Collapsed;
+                luxbar2.Visibility = Visibility.Collapsed;
+                luxbar3.Visibility = Visibility.Collapsed;
             }
             else
             {
                 lightblack.Visibility = Visibility.Collapsed;
+                luxbar1.Visibility = Visibility.Visible;
+                luxbar2.Visibility = Visibility.Visible;
+                luxbar3.Visibility = Visibility.Visible;
             }
         }
 
-        public async void ReadBMP280()
+        public void WriteResults()
         {
-
-            temp = await BMP280.ReadTemperature();
-            pressure = await BMP280.ReadPreasure();
-            altitude = await BMP280.ReadAltitude(seaLevelPressure);
-
             temper.Text = temp.ToString("####.00") + " deg C";
             RadialProgressBarControl.Value = temp;
             pressuar.Text = pressure.ToString("#####.00") + " Pa";
@@ -215,13 +239,11 @@ namespace BMP208OwnApp
             altitudes.Text = altitude.ToString("#####.00") + " m";
             luxer.Text = currentLux.ToString("#####.00" + " lux");
 
-            luxbar1.Value = currentLux;
-            luxbar2.Value = currentLux;
-            luxbar3.Value = currentLux;
-
+            //animate lamp
             LuxMethod();
 
-            if(altitude <= 0)
+            //animate altitude
+            if (altitude <= 0)
             {
                 rowaltitude.Margin = new Thickness(0, 400, 0, 0);
             }
@@ -231,10 +253,9 @@ namespace BMP208OwnApp
             }
             else
             {
-                rowaltitude.Margin = new Thickness(0, 400-altitude, 0, 0);
+                rowaltitude.Margin = new Thickness(0, 400 - altitude, 0, 0);
             }
         }
-
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -254,14 +275,14 @@ namespace BMP208OwnApp
                 const int RPI2_RED_LED_PIN = 5;
                 const int RPI2_GREEN_LED_PIN = 13;
                 const int RPI2_BLUE_LED_PIN = 6;
-                
+
                 redpin = gpio.OpenPin(RPI2_RED_LED_PIN);
                 greenpin = gpio.OpenPin(RPI2_GREEN_LED_PIN);
                 bluepin = gpio.OpenPin(RPI2_BLUE_LED_PIN);
             }
             else
             {
-               
+
                 // take the first 3 available GPIO pins
                 var pins = new List<GpioPin>(3);
                 for (int pinNumber = 0; pinNumber < gpio.PinCount; pinNumber++)
@@ -270,7 +291,7 @@ namespace BMP208OwnApp
                     switch (deviceModel)
                     {
                         case DeviceModel.DragonBoard410:
-                           
+
                             if (pinNumber == 21 || pinNumber == 120)
                                 continue;
                             break;
@@ -327,6 +348,8 @@ namespace BMP208OwnApp
 
         }
 
+
+        //check GPIO
         public enum DeviceModel { RaspberryPi2, MinnowBoardMax, DragonBoard410, Unknown };
 
         static DeviceModel GetDeviceModel()
@@ -349,10 +372,5 @@ namespace BMP208OwnApp
                 return DeviceModel.Unknown;
             }
         }
-
-
-        private GpioPin redpin;
-        private GpioPin greenpin;
-        private GpioPin bluepin;
     }
 }

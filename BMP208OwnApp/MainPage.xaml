@@ -39,10 +39,20 @@
             <TextBlock HorizontalAlignment="Left" Margin="162,0,0,0" Text="-20" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="22" FontWeight="Bold"/>
             <TextBlock HorizontalAlignment="Left" Margin="33,0,0,0" Text="+20" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="22" FontWeight="Bold"/>
 
-            <controls:RadialProgressBar x:Name="RadialProgressBarControl" Value="0" Minimum="-40" Maximum="40" Thickness="35" Outline="Gray" Foreground="Red"/>
+            <controls:RadialProgressBar x:Name="RadialProgressBarControl" Value="0" Minimum="-40" Maximum="40" Thickness="35" Outline="Gray">
+                <controls:RadialProgressBar.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <LinearGradientBrush.RelativeTransform>
+                            <CompositeTransform CenterY="0.5" CenterX="0.5" Rotation="-90"/>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="#FFF70000" Offset="0.5"/>
+                        <GradientStop Color="Blue" Offset="0.5"/>
+                    </LinearGradientBrush>
+                </controls:RadialProgressBar.Foreground>
+            </controls:RadialProgressBar>
         </Grid>
 
-        <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174"/>
+        <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Visible"/>
         <Image x:Name="lightblack" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulbblack.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Collapsed"/>
 
         <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
@@ -50,7 +60,7 @@
                 <CompositeTransform Rotation="-140"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Center" Height="20" Margin="0,175,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
+        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Center" Height="20" Margin="0,180,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-90"/>
             </ProgressBar.RenderTransform>
