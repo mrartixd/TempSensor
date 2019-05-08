@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using Windows.System.Threading;
-using System.Data;
 
 namespace BMP208OwnApp
 {
