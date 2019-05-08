@@ -64,14 +64,23 @@ namespace BMP208OwnApp
             timer.Start();
             //
 
-            //timer to send db
-            sendDB = new DispatcherTimer();
-            sendDB.Interval = TimeSpan.FromSeconds(10);
-            sendDB.Tick += sendDB_Tick;
-            sendDB.Start();
+            
 
             //open con
-            con.Open();
+            if(IsServerConnected(connecttodb) == true)
+            {
+                //timer to send db
+                sendDB = new DispatcherTimer();
+                sendDB.Interval = TimeSpan.FromSeconds(10);
+                sendDB.Tick += sendDB_Tick;
+                sendDB.Start();
+                con.Open();
+            }
+            else
+            {
+                Debug.WriteLine("Not connection to server or to network");
+            }
+            
 
             // Initialize and Start HTTP Server
             WebServer = new HttpServer();
