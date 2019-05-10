@@ -19,25 +19,25 @@ namespace BMP208OwnApp
     public sealed partial class MainPage : Page
     {
         //Colors
-        SolidColorBrush whitecolor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        SolidColorBrush yellowcolor = new SolidColorBrush(Color.FromArgb(255, 255, 203, 90));
+        readonly SolidColorBrush whitecolor = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        readonly SolidColorBrush yellowcolor = new SolidColorBrush(Color.FromArgb(255, 255, 203, 90));
 
         //DB
-        
-        DispatcherTimer sendDB;
+
+        readonly DispatcherTimer sendDB;
         SqlCommand cmd;
         const string connecttodb = @"Data Source=mail.vk.edu.ee;Initial Catalog=db_Artur_Shabunov; User Id=t154331; Password=t154331";
-        SqlConnection con = new SqlConnection(connecttodb);
+        readonly SqlConnection con = new SqlConnection(connecttodb);
 
         //Driver sensors
         private const string I2C_CONTROLLER_NAME = "I2C1";
         private I2cDevice I2CDev;
         private TSL2561 TSL2561Sensor;
-        BMP280 BMP280 = new BMP280();
-        DispatcherTimer timer;
+        readonly BMP280 BMP280 = new BMP280();
+        readonly DispatcherTimer timer;
 
         //Values
-        private Boolean Gain = false;
+        private readonly Boolean Gain = false;
         private uint MS = 0;
         public static float temp = 0;
         public static double currentLux = 0;
@@ -46,7 +46,7 @@ namespace BMP208OwnApp
         const float seaLevelPressure = 1013.25f;
 
         // Http Server
-        private HttpServer WebServer = null;
+        private readonly HttpServer WebServer = null;
 
         //pins
         private GpioPin redpin;
@@ -64,15 +64,15 @@ namespace BMP208OwnApp
             timer.Start();
             //
 
-            
+
 
             //open con
-            if(IsServerConnected(connecttodb) == true)
+            if (IsServerConnected(connecttodb) == true)
             {
                 //timer to send db
                 sendDB = new DispatcherTimer();
                 sendDB.Interval = TimeSpan.FromSeconds(10);
-                sendDB.Tick += sendDB_Tick;
+                sendDB.Tick += SendDB_Tick;
                 sendDB.Start();
                 con.Open();
             }
@@ -80,7 +80,7 @@ namespace BMP208OwnApp
             {
                 Debug.WriteLine("Not connection to server or to network");
             }
-            
+
 
             // Initialize and Start HTTP Server
             WebServer = new HttpServer();
@@ -126,10 +126,10 @@ namespace BMP208OwnApp
                 return;
             }
 
-            initializeSensor();
+            InitializeSensor();
         }
 
-        private void initializeSensor()
+        private void InitializeSensor()
         {
             // Initialize Sensor
             TSL2561Sensor = new TSL2561(ref I2CDev);
@@ -170,7 +170,7 @@ namespace BMP208OwnApp
         public async void Timer_Tick(object sender, object e)
         {
             temp = await BMP280.ReadTemperature();
-            pressure = await BMP280.ReadPreasure();
+            pressure = await BMP280.ReadPreasure()/100000;//check how conver from pa to bar
             altitude = await BMP280.ReadAltitude(seaLevelPressure);
             // Retrive luminosity and update the screen
             uint[] Data = TSL2561Sensor.GetData();
@@ -178,7 +178,7 @@ namespace BMP208OwnApp
             WriteResults();
         }
 
-        public void sendDB_Tick(object sender, object e)
+        public void SendDB_Tick(object sender, object e)
         {
 
             cmd = new SqlCommand("insert into [Temp] (Temperature,Lux,Pressure,Altitude,DateTime) values (@temp, @lux, @pres, @altit, @datetime)", con);
@@ -242,7 +242,7 @@ namespace BMP208OwnApp
         {
             temper.Text = temp.ToString("####.00") + " deg C";
             RadialProgressBarControl.Value = temp;
-            pressuar.Text = pressure.ToString("#####.00") + " Pa";
+            pressuar.Text = pressure.ToString("#####.00") + " bar";
             pressurebar.Value = pressure;
             altitudes.Text = altitude.ToString("#####.00") + " m";
             luxer.Text = currentLux.ToString("#####.00" + " lux");
@@ -305,9 +305,7 @@ namespace BMP208OwnApp
                             break;
                     }
 
-                    GpioPin pin;
-                    GpioOpenStatus status;
-                    if (gpio.TryOpenPin(pinNumber, GpioSharingMode.Exclusive, out pin, out status))
+                    if (gpio.TryOpenPin(pinNumber, GpioSharingMode.Exclusive, out GpioPin pin, out _))
                     {
                         pins.Add(pin);
                         if (pins.Count == 3)

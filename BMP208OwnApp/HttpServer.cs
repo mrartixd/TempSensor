@@ -11,7 +11,7 @@ namespace BMP208OwnApp
     public sealed class HttpServer : IDisposable
     {
         private const uint bufLen = 8192;
-        private int defaultPort = 80;
+        private readonly int defaultPort = 80;
         private readonly StreamSocketListener sock;
 
         public object[] TimeStamp { get; private set; }

@@ -10,19 +10,19 @@ namespace BMP208OwnApp
     public class BMP280_CalibrationData
     {
         //BMP280 Registers
-        public UInt16 dig_T1 { get; set; }
-        public Int16 dig_T2 { get; set; }
-        public Int16 dig_T3 { get; set; }
+        public UInt16 Dig_T1 { get; set; }
+        public Int16 Dig_T2 { get; set; }
+        public Int16 Dig_T3 { get; set; }
 
-        public UInt16 dig_P1 { get; set; }
-        public Int16 dig_P2 { get; set; }
-        public Int16 dig_P3 { get; set; }
-        public Int16 dig_P4 { get; set; }
-        public Int16 dig_P5 { get; set; }
-        public Int16 dig_P6 { get; set; }
-        public Int16 dig_P7 { get; set; }
-        public Int16 dig_P8 { get; set; }
-        public Int16 dig_P9 { get; set; }
+        public UInt16 Dig_P1 { get; set; }
+        public Int16 Dig_P2 { get; set; }
+        public Int16 Dig_P3 { get; set; }
+        public Int16 Dig_P4 { get; set; }
+        public Int16 Dig_P5 { get; set; }
+        public Int16 Dig_P6 { get; set; }
+        public Int16 Dig_P7 { get; set; }
+        public Int16 Dig_P8 { get; set; }
+        public Int16 Dig_P9 { get; set; }
     }
 
     public class BMP280
@@ -159,7 +159,6 @@ namespace BMP208OwnApp
         //Method to read a 16-bit value from a register and return it in little endian format
         private UInt16 ReadUInt16_LittleEndian(byte register)
         {
-            UInt16 value = 0;
             byte[] writeBuffer = new byte[] { 0x00 };
             byte[] readBuffer = new byte[] { 0x00, 0x00 };
 
@@ -168,21 +167,20 @@ namespace BMP208OwnApp
             bmp280.WriteRead(writeBuffer, readBuffer);
             int h = readBuffer[1] << 8;
             int l = readBuffer[0];
-            value = (UInt16)(h + l);
+            ushort value = (ushort)(h + l);
             return value;
         }
 
         //Method to read an 8-bit value from a register
         private byte ReadByte(byte register)
         {
-            byte value = 0;
             byte[] writeBuffer = new byte[] { 0x00 };
             byte[] readBuffer = new byte[] { 0x00 };
 
             writeBuffer[0] = register;
 
             bmp280.WriteRead(writeBuffer, readBuffer);
-            value = readBuffer[0];
+            byte value = readBuffer[0];
             return value;
         }
 
@@ -190,23 +188,25 @@ namespace BMP208OwnApp
         private async Task<BMP280_CalibrationData> ReadCoefficeints()
         {
             // 16 bit calibration data is stored as Little Endian, the helper method will do the byte swap.
-            CalibrationData = new BMP280_CalibrationData();
+            CalibrationData = new BMP280_CalibrationData
+            {
 
-            // Read temperature calibration data
-            CalibrationData.dig_T1 = ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T1);
-            CalibrationData.dig_T2 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T2);
-            CalibrationData.dig_T3 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T3);
+                // Read temperature calibration data
+                Dig_T1 = ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T1),
+                Dig_T2 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T2),
+                Dig_T3 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_T3),
 
-            // Read presure calibration data
-            CalibrationData.dig_P1 = ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P1);
-            CalibrationData.dig_P2 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P2);
-            CalibrationData.dig_P3 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P3);
-            CalibrationData.dig_P4 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P4);
-            CalibrationData.dig_P5 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P5);
-            CalibrationData.dig_P6 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P6);
-            CalibrationData.dig_P7 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P7);
-            CalibrationData.dig_P8 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P8);
-            CalibrationData.dig_P9 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P9);
+                // Read presure calibration data
+                Dig_P1 = ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P1),
+                Dig_P2 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P2),
+                Dig_P3 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P3),
+                Dig_P4 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P4),
+                Dig_P5 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P5),
+                Dig_P6 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P6),
+                Dig_P7 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P7),
+                Dig_P8 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P8),
+                Dig_P9 = (Int16)ReadUInt16_LittleEndian((byte)eRegisters.BMP280_REGISTER_DIG_P9)
+            };
 
             await Task.Delay(1);
             return CalibrationData;
@@ -221,8 +221,8 @@ namespace BMP208OwnApp
             double var1, var2, T;
 
             //The temperature is calculated using the compensation formula in the BMP280 datasheet
-            var1 = ((adc_T / 16384.0) - (CalibrationData.dig_T1 / 1024.0)) * CalibrationData.dig_T2;
-            var2 = ((adc_T / 131072.0) - (CalibrationData.dig_T1 / 8192.0)) * CalibrationData.dig_T3;
+            var1 = ((adc_T / 16384.0) - (CalibrationData.Dig_T1 / 1024.0)) * CalibrationData.Dig_T2;
+            var2 = ((adc_T / 131072.0) - (CalibrationData.Dig_T1 / 8192.0)) * CalibrationData.Dig_T3;
 
             t_fine = (Int32)(var1 + var2);
 
@@ -239,11 +239,11 @@ namespace BMP208OwnApp
 
             //The pressure is calculated using the compensation formula in the BMP280 datasheet
             var1 = t_fine - 128000;
-            var2 = var1 * var1 * (Int64)CalibrationData.dig_P6;
-            var2 = var2 + ((var1 * (Int64)CalibrationData.dig_P5) << 17);
-            var2 = var2 + ((Int64)CalibrationData.dig_P4 << 35);
-            var1 = ((var1 * var1 * (Int64)CalibrationData.dig_P3) >> 8) + ((var1 * (Int64)CalibrationData.dig_P2) << 12);
-            var1 = (((((Int64)1 << 47) + var1)) * (Int64)CalibrationData.dig_P1) >> 33;
+            var2 = var1 * var1 * (Int64)CalibrationData.Dig_P6;
+            var2 = var2 + ((var1 * (Int64)CalibrationData.Dig_P5) << 17);
+            var2 = var2 + ((Int64)CalibrationData.Dig_P4 << 35);
+            var1 = ((var1 * var1 * (Int64)CalibrationData.Dig_P3) >> 8) + ((var1 * (Int64)CalibrationData.Dig_P2) << 12);
+            var1 = (((((Int64)1 << 47) + var1)) * (Int64)CalibrationData.Dig_P1) >> 33;
             if (var1 == 0)
             {
                 Debug.WriteLine("BMP280_compensate_P_Int64 Jump out to avoid / 0");
@@ -252,9 +252,9 @@ namespace BMP208OwnApp
             //Perform calibration operations as per datasheet: http://www.adafruit.com/datasheets/BST-BMP280-DS001-11.pdf
             p = 1048576 - adc_P; 
             p = (((p << 31) - var2) * 3125) / var1;
-            var1 = ((Int64)CalibrationData.dig_P9 * (p >> 13) * (p >> 13)) >> 25;
-            var2 = ((Int64)CalibrationData.dig_P8 * p) >> 19;
-            p = ((p + var1 + var2) >> 8) + ((Int64)CalibrationData.dig_P7 << 4);
+            var1 = ((Int64)CalibrationData.Dig_P9 * (p >> 13) * (p >> 13)) >> 25;
+            var2 = ((Int64)CalibrationData.Dig_P8 * p) >> 19;
+            p = ((p + var1 + var2) >> 8) + ((Int64)CalibrationData.Dig_P7 << 4);
             return p;
         }
 

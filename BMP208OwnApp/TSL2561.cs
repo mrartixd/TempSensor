@@ -15,19 +15,19 @@ namespace BMP208OwnApp
         public const int TSL2561_ADDR_1 = 0x49;    // address with '1' shorted on board 
         // TSL Commands
         private const int TSL2561_CMD = 0x80;
-        private const int TSL2561_CMD_CLEAR = 0xC0;
+        //private const int TSL2561_CMD_CLEAR = 0xC0;
         // TSL Registers
         private const int TSL2561_REG_CONTROL = 0x00;
         private const int TSL2561_REG_TIMING = 0x01;
-        private const int TSL2561_REG_THRESH_L = 0x02;
-        private const int TSL2561_REG_THRESH_H = 0x04;
-        private const int TSL2561_REG_INTCTL = 0x06;
+        //private const int TSL2561_REG_THRESH_L = 0x02;
+        //private const int TSL2561_REG_THRESH_H = 0x04;
+        //private const int TSL2561_REG_INTCTL = 0x06;
         private const int TSL2561_REG_ID = 0x0A;
         private const int TSL2561_REG_DATA_0 = 0x0C;
         private const int TSL2561_REG_DATA_1 = 0x0E;
 
         // I2C Device
-        private I2cDevice I2C;
+        private readonly I2cDevice I2C;
 
         public TSL2561(ref I2cDevice I2CDevice)
         {
@@ -37,13 +37,13 @@ namespace BMP208OwnApp
         // TSL2561 Sensor Power up
         public void PowerUp()
         {
-            write8(TSL2561_REG_CONTROL, 0x03);
+            Write8(TSL2561_REG_CONTROL, 0x03);
         }
 
         // TSL2561 Sensor Power down
         public void PowerDown()
         {
-            write8(TSL2561_REG_CONTROL, 0x00);
+            Write8(TSL2561_REG_CONTROL, 0x00);
         }
 
         // Retrieve TSL ID
@@ -55,8 +55,7 @@ namespace BMP208OwnApp
         // Set TSL2561 Timing and return the MS
         public int SetTiming(Boolean gain, byte time)
         {
-            int ms = 0;
-
+            int ms;
             switch (time)
             {
                 case 0: ms = 14; break;
@@ -78,7 +77,7 @@ namespace BMP208OwnApp
             timing &= ~0x03;
             timing |= (time & 0x03);
 
-            write8(TSL2561_REG_TIMING, (byte)timing);
+            Write8(TSL2561_REG_TIMING, (byte)timing);
 
             return ms;
         }
@@ -98,7 +97,7 @@ namespace BMP208OwnApp
         public double GetLux(Boolean gain, uint ms, uint CH0, uint CH1)
         {
             double ratio, d0, d1;
-            double lux = 0.0;
+            double lux;
 
             // Determine if either sensor saturated (0xFFFF)
             // If so, abandon ship (calculation will not be accurate)
@@ -153,7 +152,7 @@ namespace BMP208OwnApp
         }
 
         // Write byte
-        private void write8(byte addr, byte cmd)
+        private void Write8(byte addr, byte cmd)
         {
             byte[] Command = new byte[] { (byte)((addr) | TSL2561_CMD), cmd };
 
