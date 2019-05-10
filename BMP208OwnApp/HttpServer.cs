@@ -5,6 +5,7 @@ using Windows.Networking.Sockets;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
+using System.Diagnostics;
 
 namespace BMP208OwnApp
 {
@@ -55,28 +56,17 @@ namespace BMP208OwnApp
 
         private async Task WriteResponseAsync(string[] requestTokens, IOutputStream outstream)
         {
-            // Content body
-            string respBody = string.Format(@"<html>
-                                                    <head>
-                                                        <title>Weather Station</title>
-                                                        <meta http-equiv='refresh' content='3' />
-                                                    </head>
-                                                    <body>
-                                                        <p><font size='3'>Time:{0}</font></p>
-                                                        <br/>
-                                                        <p><font size='6'>Temperature: {1} deg C</font></p>
-                                                        <p><font size='6'>Light: {2} lux</font></p>
-                                                        <p><font size='6'>Pressure: {3} Pa</font></p>
-                                                        <p><font size='6'>Altitude: {4} m</font></p>
-                                                        <br />
-                                                    </body>
-                                                  </html>",
+            
+            string sText = @File.ReadAllText("mainpage.html");
+            StringBuilder sb = new StringBuilder(sText);
+            sb.Replace("{0}",DateTime.Now.ToString("HH:mm"));
+            sb.Replace("{1}", String.Format("{0:0.00}", MainPage.temp));
+            sb.Replace("{2}", String.Format("{0:0.00}", MainPage.currentLux));
+            sb.Replace("{3}", String.Format("{0:0.00}", MainPage.temp));
+            sb.Replace("{4}", String.Format("{0:0.00}", MainPage.temp));
 
-                                            DateTime.Now.ToString("h:mm:ss tt"),
-                                            String.Format("{0:0.00}", MainPage.temp),
-                                            String.Format("{0:0.00}", MainPage.currentLux),
-                                            String.Format("{0:0.00}", MainPage.pressure),
-                                            String.Format("{0:0.00}", MainPage.altitude));
+
+            string respBody = sb.ToString();
 
             string htmlCode = "200 OK";
 

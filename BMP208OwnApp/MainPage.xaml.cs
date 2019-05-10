@@ -40,11 +40,14 @@ namespace BMP208OwnApp
         private readonly Boolean Gain = false;
         private uint MS = 0;
         public static float temp = 0;
+        public static float tempF = 0;
         public static double currentLux = 0;
         public static float pressure = 0;
         public static float altitude = 0;
+        public static double hhMg = 0;
+        const double patommhg = 133.322;
         const float seaLevelPressure = 1013.25f;
-
+        const string stringformat = "0.##";
         // Http Server
         private readonly HttpServer WebServer = null;
 
@@ -58,8 +61,10 @@ namespace BMP208OwnApp
             this.InitializeComponent();
 
             //timer for temp
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1000)
+            };
             timer.Tick += Timer_Tick;
             timer.Start();
             //
@@ -70,8 +75,10 @@ namespace BMP208OwnApp
             if (IsServerConnected(connecttodb) == true)
             {
                 //timer to send db
-                sendDB = new DispatcherTimer();
-                sendDB.Interval = TimeSpan.FromSeconds(10);
+                sendDB = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(10)
+                };
                 sendDB.Tick += SendDB_Tick;
                 sendDB.Start();
                 con.Open();
@@ -109,10 +116,11 @@ namespace BMP208OwnApp
             try
             {
                 // Initialize I2C device
-                var settings = new I2cConnectionSettings(TSL2561.TSL2561_ADDR);
-
-                settings.BusSpeed = I2cBusSpeed.FastMode;
-                settings.SharingMode = I2cSharingMode.Shared;
+                var settings = new I2cConnectionSettings(TSL2561.TSL2561_ADDR)
+                {
+                    BusSpeed = I2cBusSpeed.FastMode,
+                    SharingMode = I2cSharingMode.Shared
+                };
 
                 string aqs = I2cDevice.GetDeviceSelector(I2C_CONTROLLER_NAME);  /* Find the selector string for the I2C bus controller                   */
                 var dis = await DeviceInformation.FindAllAsync(aqs);            /* Find the I2C bus controller device with our selector string           */
@@ -170,7 +178,9 @@ namespace BMP208OwnApp
         public async void Timer_Tick(object sender, object e)
         {
             temp = await BMP280.ReadTemperature();
-            pressure = await BMP280.ReadPreasure()/100000;//check how conver from pa to bar
+            tempF = (temp * 9 / 5) + 32;
+            pressure = await BMP280.ReadPreasure();
+            hhMg = pressure / patommhg;
             altitude = await BMP280.ReadAltitude(seaLevelPressure);
             // Retrive luminosity and update the screen
             uint[] Data = TSL2561Sensor.GetData();
@@ -182,13 +192,13 @@ namespace BMP208OwnApp
         {
 
             cmd = new SqlCommand("insert into [Temp] (Temperature,Lux,Pressure,Altitude,DateTime) values (@temp, @lux, @pres, @altit, @datetime)", con);
-            cmd.Parameters.AddWithValue("@temp", temp.ToString("#####.00"));
-            cmd.Parameters.AddWithValue("@lux", currentLux.ToString("#####.00"));
-            cmd.Parameters.AddWithValue("@pres", pressure.ToString("#####.00"));
-            cmd.Parameters.AddWithValue("@altit", altitude.ToString("#####.00"));
+            cmd.Parameters.AddWithValue("@temp", temp.ToString(stringformat));
+            cmd.Parameters.AddWithValue("@lux", currentLux.ToString(stringformat));
+            cmd.Parameters.AddWithValue("@pres", pressure.ToString(stringformat));
+            cmd.Parameters.AddWithValue("@altit", altitude.ToString(stringformat));
             cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
             cmd.ExecuteNonQuery();
-            Debug.WriteLine("Send to DB: Temp:" + temp.ToString("#####.00") + ", Lux:" + currentLux.ToString("#####.00") + ", Pres:" + pressure.ToString("#####.00") + ", Altit" + altitude.ToString("#####.00"));
+            Debug.WriteLine("Send to DB: Temp:" + temp.ToString(stringformat) + ", Lux:" + currentLux.ToString(stringformat) + ", Pres:" + pressure.ToString(stringformat) + ", Altit" + altitude.ToString(stringformat));
 
             //blue
             redpin.Write(GpioPinValue.Low);
@@ -240,12 +250,14 @@ namespace BMP208OwnApp
 
         public void WriteResults()
         {
-            temper.Text = temp.ToString("####.00") + " deg C";
+            temper.Text = temp.ToString(stringformat) + " C";
+            temperF.Text = tempF.ToString(stringformat) + " F";
             RadialProgressBarControl.Value = temp;
-            pressuar.Text = pressure.ToString("#####.00") + " bar";
+            pressuar.Text = pressure.ToString(stringformat) + " Pa";
+            pressuarmmhg.Text = hhMg.ToString(stringformat) + " mm Hg";
             pressurebar.Value = pressure;
-            altitudes.Text = altitude.ToString("#####.00") + " m";
-            luxer.Text = currentLux.ToString("#####.00" + " lux");
+            altitudes.Text = altitude.ToString(stringformat) + " m";
+            luxer.Text = currentLux.ToString(stringformat) + " lux";
 
             //animate lamp
             LuxMethod();

@@ -55,17 +55,17 @@
         <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Visible"/>
         <Image x:Name="lightblack" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulbblack.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Collapsed"/>
 
-        <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
+        <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="2500" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-140"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Center" Height="20" Margin="0,180,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
+        <ProgressBar x:Name="luxbar2" Grid.Column="1" HorizontalAlignment="Center" Height="20" Margin="0,180,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="2500" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-90"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <ProgressBar x:Name="luxbar3" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="210,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="1000" Minimum="0.1">
+        <ProgressBar x:Name="luxbar3" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="210,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="2500" Minimum="0.1">
             <ProgressBar.RenderTransform>
                 <CompositeTransform Rotation="-40"/>
             </ProgressBar.RenderTransform>
@@ -88,6 +88,9 @@
         <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="BMP:" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" FontSize="20" Margin="10,3,0,0" Grid.Column="2"/>
         <TextBlock x:Name="tslsensor" Height="40" Grid.Row="1" Text="TextBlock" TextWrapping="Wrap" FontSize="20" Margin="65,3,1,-3" Grid.Column="3" FontFamily="Segoe UI"/>
         <TextBlock HorizontalAlignment="Left" Height="40" Grid.Row="1" Text="TSL:" TextWrapping="Wrap" VerticalAlignment="Top" Width="55" FontSize="20" Margin="10,3,0,0" Grid.Column="3"/>
+        <Rectangle Grid.Column="2" HorizontalAlignment="Left" Height="3" Margin="129,336,0,0" VerticalAlignment="Top" Width="72" Fill="Red"/>
+        <TextBlock x:Name="pressuarmmhg" HorizontalAlignment="Center" Margin="0,572,0,0" Text="000" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="38" Grid.Column="2"/>
+        <TextBlock x:Name="temperF" Margin="0,572,0,0" Text="000" TextWrapping="Wrap" FontSize="38" VerticalAlignment="Top" HorizontalAlignment="Center"/>
 
 
     </Grid>
