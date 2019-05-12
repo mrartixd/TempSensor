@@ -366,7 +366,6 @@ namespace BMP208OwnApp
 
         }
 
-
         //check GPIO
         public enum DeviceModel { RaspberryPi2, MinnowBoardMax, DragonBoard410, Unknown };
 
