@@ -2,33 +2,21 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="10, width=device-width, initial-scale=1.0" http-equiv='refresh'/>
-
+    <meta name="viewport" content="10" http-equiv='refresh'/>
     <title>Weather Station</title>
-
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+    <link href="css/surface_styles.css" rel="stylesheet">
 </head>
-
-<style>
-    .pure-g > div {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-        .l-box {
-            padding: 1em;
-        }
-</style>
-
-<body>
-    <div class="l-box">
-        <div class="pure-g">
-            <div class="pure-u-1"><p>Time:{0}</p></div>
-            <div class="pure-u-1-4"><p>Temperature: {1} deg C</p></div>
-            <div class="pure-u-1-4"><p>Light: {2} lux</p></div>
-            <div class="pure-u-1-4"><p>Pressure: {3} Pa</p></div>
-            <div class="pure-u-1-4"><p>Altitude: {4} m</p></div>
-        </div>
+<header class="container tile bg--asphalt m--2 g--4">
+        <div><h1>Weather Station</h1><h2 class="subtitle">Time:{0}</h2></div>
+</header>
+<body class="bg--clouds">   
+    <div class="container g--2 g-m--2">
+        <div class="card tile bg--red"><h2>Temperature: {1} C</h2></div>
+        <div class="card tile bg--deep-purple"><h2>Temperature: {1} F</h2></div>
+        <div class="card tile bg--sunflower"><h2>Light: {2} lux</h2></div>
+        <div class="card tile bg--nephritis"><h2>Pressure: {3} Pa</h2></div>
+        <div class="card tile bg--emerald"><h2>Pressure: {3} hh Mg</h2></div>
+        <div class="card tile bg--amethyst"><h2>Altitude: {4} m</h2></div>
     </div>
 </body>
 </html>
