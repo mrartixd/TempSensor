@@ -45,6 +45,7 @@ namespace BMP208OwnApp
         public static float pressure = 0;
         public static float altitude = 0;
         public static double hhMg = 0;
+        public static DeviceModel deviceModel = GetDeviceModel();
         const double patommhg = 133.322;
         const float seaLevelPressure = 1013.25f;
         const string stringformat = "0.##";
@@ -288,7 +289,7 @@ namespace BMP208OwnApp
                 return;
             }
 
-            var deviceModel = GetDeviceModel();
+            
             if (deviceModel == DeviceModel.RaspberryPi2)
             {
                 // Use pin numbers compatible with documentation

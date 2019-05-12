@@ -59,11 +59,14 @@ namespace BMP208OwnApp
             
             string sText = @File.ReadAllText("mainpage.html");
             StringBuilder sb = new StringBuilder(sText);
-            sb.Replace("{0}",DateTime.Now.ToString("HH:mm"));
+            sb.Replace("{0}", DateTime.Now.ToString("HH:mm"));
             sb.Replace("{1}", String.Format("{0:0.00}", MainPage.temp));
             sb.Replace("{2}", String.Format("{0:0.00}", MainPage.currentLux));
-            sb.Replace("{3}", String.Format("{0:0.00}", MainPage.temp));
-            sb.Replace("{4}", String.Format("{0:0.00}", MainPage.temp));
+            sb.Replace("{3}", String.Format("{0:0.00}", MainPage.pressure));
+            sb.Replace("{4}", String.Format("{0:0.00}", MainPage.altitude));
+            sb.Replace("{5}", String.Format("{0:0.00}", MainPage.tempF));
+            sb.Replace("{6}", String.Format("{0:0.00}", MainPage.hhMg));
+            sb.Replace("{7}", MainPage.deviceModel.ToString());
 
 
             string respBody = sb.ToString();

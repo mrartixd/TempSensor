@@ -2,21 +2,36 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="10" http-equiv='refresh'/>
+    <meta name="viewport" content="3" http-equiv='refresh' />
     <title>Weather Station</title>
-    <link href="css/surface_styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://rawgit.com/iamgoodbytes/ES6-workshop/notes-start/css/surface_styles.css">
 </head>
-<header class="container tile bg--asphalt m--2 g--4">
-        <div><h1>Weather Station</h1><h2 class="subtitle">Time:{0}</h2></div>
-</header>
-<body class="bg--clouds">   
-    <div class="container g--2 g-m--2">
-        <div class="card tile bg--red"><h2>Temperature: {1} C</h2></div>
-        <div class="card tile bg--deep-purple"><h2>Temperature: {1} F</h2></div>
-        <div class="card tile bg--sunflower"><h2>Light: {2} lux</h2></div>
-        <div class="card tile bg--nephritis"><h2>Pressure: {3} Pa</h2></div>
-        <div class="card tile bg--emerald"><h2>Pressure: {3} hh Mg</h2></div>
-        <div class="card tile bg--amethyst"><h2>Altitude: {4} m</h2></div>
+<body class="bg--clouds">
+    <header class="container bg--asphalt">
+        <h1 class="m--1 g--4">Weather Station</h1>
+        <h2 class="subtitle m--1 g--4">{0}</h2>
+    </header>
+    <div class="g-m--12 g--3">
+        <div class="tile"><h2>Temperature</h2></div>
+        <div class="card bg--red"><h3>{1} C</h3></div>
+        <div class="card bg--pomegranate"><h3>{5} F</h3></div>
     </div>
+    <div class="g-m--12 g--3">
+        <div class="tile"><h2>Light</h2></div>
+        <div class="card bg--sunflower"><h3>{2} lux</h3></div>
+    </div>
+    <div class="g-m--12 g--3">
+        <div class="tile"><h2>Pressure</h2></div>
+        <div class="card bg--nephritis"><h3>{3} Pa</h3></div>
+        <div class="card bg--emerald"><h3>{6} mm Hg</h3></div>
+    </div>
+    <div class="g-m--12 g--3">
+        <div class="tile"><h2>Altitude</h2></div>
+        <div class="card bg--amethyst"><h3>{4} m</h3></div>
+    </div>
+    <footer class="g--12 no-margin-vertical bg--midnight-blue">
+        <div class="color--white g--10 m--1">Model SBC: {7}</div>
+        <div class="color--white g--10 m--1">Artur Shabunov a154331</div>
+    </footer>
 </body>
 </html>
