@@ -52,8 +52,8 @@
             </controls:RadialProgressBar>
         </Grid>
 
-        <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Visible"/>
-        <Image x:Name="lightblack" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="Assets/lightbulbblack.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Collapsed"/>
+        <Image x:Name="light" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="img/lightbulb.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Visible"/>
+        <Image x:Name="lightblack" Grid.Column="1" Margin="0,230,0,0" Stretch="Fill" Source="img/lightbulbblack.png" HorizontalAlignment="Center" VerticalAlignment="Top" Height="175" Width="174" Visibility="Collapsed"/>
 
         <ProgressBar x:Name="luxbar1" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="62,212.5,0,0" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" Foreground="#FFFFCB5A" Maximum="2500" Minimum="0.1">
             <ProgressBar.RenderTransform>
@@ -70,7 +70,8 @@
                 <CompositeTransform Rotation="-40"/>
             </ProgressBar.RenderTransform>
         </ProgressBar>
-        <Image x:Name="mount" Grid.Column="3" Margin="0,194,0,0" Stretch="Fill" Source="Assets/mountain.png" HorizontalAlignment="Center" VerticalAlignment="Top" Width="215" Height="215"/>
+        <Image x:Name="mount" Grid.Column="3" Margin="0,194,0,0" Stretch="Fill" Source="img/mountain.png" HorizontalAlignment="Center" VerticalAlignment="Top" Width="215" Height="215"/>
+        <Rectangle Grid.Column="3" HorizontalAlignment="Center" Height="53" Margin="0,400,0,0" VerticalAlignment="Top" Width="270" Fill="#FF1212E6"/>
         <Rectangle x:Name="rowaltitude" Grid.Column="3" HorizontalAlignment="Center" Height="11" Margin="0,400,0,0" VerticalAlignment="Top" Width="270" Fill="#FF686868"/>
 
 

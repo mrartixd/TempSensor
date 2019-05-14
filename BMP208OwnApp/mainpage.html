@@ -2,9 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="3" http-equiv='refresh' />
+    <meta name="viewport" content="3 width=device-width, initial-scale=1.0" http-equiv='refresh' />
     <title>Weather Station</title>
     <link rel="stylesheet" href="https://rawgit.com/iamgoodbytes/ES6-workshop/notes-start/css/surface_styles.css">
+    <!-- <link rel="stylesheet" href="css/surface_styles.css" type="text\css"> -->
 </head>
 <body class="bg--clouds">
     <header class="container bg--asphalt">
@@ -12,24 +13,24 @@
         <h2 class="subtitle m--1 g--4">{0}</h2>
     </header>
     <div class="g-m--12 g--3">
-        <div class="tile"><h2>Temperature</h2></div>
-        <div class="card bg--red"><h3>{1} C</h3></div>
-        <div class="card bg--pomegranate"><h3>{5} F</h3></div>
+        <div class="tile text-center"><h2>Temperature</h2></div>
+        <div class="card text-center bg--red"><h3>{1} C</h3></div>
+        <div class="card text-center bg--pomegranate"><h3>{5} F</h3></div>
     </div>
     <div class="g-m--12 g--3">
-        <div class="tile"><h2>Light</h2></div>
-        <div class="card bg--sunflower"><h3>{2} lux</h3></div>
+        <div class="tile text-center"><h2>Light</h2></div>
+        <div class="card text-center bg--sunflower"><h3>{2} lux</h3></div>
     </div>
     <div class="g-m--12 g--3">
-        <div class="tile"><h2>Pressure</h2></div>
-        <div class="card bg--nephritis"><h3>{3} Pa</h3></div>
-        <div class="card bg--emerald"><h3>{6} mm Hg</h3></div>
+        <div class="tile text-center"><h2>Pressure</h2></div>
+        <div class="card text-center bg--nephritis"><h3>{3} Pa</h3></div>
+        <div class="card text-center bg--emerald"><h3>{6} mm Hg</h3></div>
     </div>
-    <div class="g-m--12 g--3">
-        <div class="tile"><h2>Altitude</h2></div>
-        <div class="card bg--amethyst"><h3>{4} m</h3></div>
+    <div style="padding-bottom:200px;" class="g-m--12 g--3">
+        <div class="tile text-center"><h2>Altitude</h2></div>
+        <div class="card text-center bg--amethyst"><h3>{4} m</h3></div>
     </div>
-    <footer class="g--12 no-margin-vertical bg--midnight-blue">
+    <footer style="position: fixed; bottom: 0;" class="g--12 no-margin-vertical bg--midnight-blue">
         <div class="color--white g--10 m--1">Model SBC: {7}</div>
         <div class="color--white g--10 m--1">Artur Shabunov a154331</div>
     </footer>

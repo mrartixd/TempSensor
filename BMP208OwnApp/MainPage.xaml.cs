@@ -264,9 +264,9 @@ namespace BMP208OwnApp
             LuxMethod();
 
             //animate altitude
-            if (altitude <= 0)
+            if (altitude <= -40)
             {
-                rowaltitude.Margin = new Thickness(0, 400, 0, 0);
+                rowaltitude.Margin = new Thickness(0, 440, 0, 0);
             }
             else if (altitude >= 200)
             {

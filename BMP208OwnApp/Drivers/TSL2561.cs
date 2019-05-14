@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Devices.I2c;
 
 namespace BMP208OwnApp
@@ -32,6 +28,14 @@ namespace BMP208OwnApp
         public TSL2561(ref I2cDevice I2CDevice)
         {
             this.I2C = I2CDevice;
+        }
+
+        public MainPage MainPage
+        {
+            get => default;
+            set
+            {
+            }
         }
 
         // TSL2561 Sensor Power up

@@ -5,7 +5,6 @@ using Windows.Networking.Sockets;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
-using System.Diagnostics;
 
 namespace BMP208OwnApp
 {
@@ -14,11 +13,14 @@ namespace BMP208OwnApp
         private const uint bufLen = 8192;
         private readonly int defaultPort = 80;
         private readonly StreamSocketListener sock;
+        private readonly string sText;
 
         public object[] TimeStamp { get; private set; }
 
         public HttpServer()
         {
+            sText = @File.ReadAllText("mainpage.html");
+
             sock = new StreamSocketListener();
 
             sock.ConnectionReceived += (s, e) => ProcessRequestAsync(e.Socket);
@@ -56,18 +58,15 @@ namespace BMP208OwnApp
 
         private async Task WriteResponseAsync(string[] requestTokens, IOutputStream outstream)
         {
-            
-            string sText = @File.ReadAllText("mainpage.html");
             StringBuilder sb = new StringBuilder(sText);
-            sb.Replace("{0}", DateTime.Now.ToString("HH:mm"));
-            sb.Replace("{1}", String.Format("{0:0.00}", MainPage.temp));
-            sb.Replace("{2}", String.Format("{0:0.00}", MainPage.currentLux));
-            sb.Replace("{3}", String.Format("{0:0.00}", MainPage.pressure));
-            sb.Replace("{4}", String.Format("{0:0.00}", MainPage.altitude));
-            sb.Replace("{5}", String.Format("{0:0.00}", MainPage.tempF));
-            sb.Replace("{6}", String.Format("{0:0.00}", MainPage.hhMg));
+            sb.Replace("{0}", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+            sb.Replace("{1}", string.Format("{0:0.00}", MainPage.temp));
+            sb.Replace("{2}", string.Format("{0:0.00}", MainPage.currentLux));
+            sb.Replace("{3}", string.Format("{0:0.00}", MainPage.pressure));
+            sb.Replace("{4}", string.Format("{0:0.00}", MainPage.altitude));
+            sb.Replace("{5}", string.Format("{0:0.00}", MainPage.tempF));
+            sb.Replace("{6}", string.Format("{0:0.00}", MainPage.hhMg));
             sb.Replace("{7}", MainPage.deviceModel.ToString());
-
 
             string respBody = sb.ToString();
 

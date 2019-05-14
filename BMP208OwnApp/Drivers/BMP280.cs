@@ -10,19 +10,19 @@ namespace BMP208OwnApp
     public class BMP280_CalibrationData
     {
         //BMP280 Registers
-        public UInt16 Dig_T1 { get; set; }
-        public Int16 Dig_T2 { get; set; }
-        public Int16 Dig_T3 { get; set; }
+        public ushort Dig_T1 { get; set; }
+        public short Dig_T2 { get; set; }
+        public short Dig_T3 { get; set; }
 
-        public UInt16 Dig_P1 { get; set; }
-        public Int16 Dig_P2 { get; set; }
-        public Int16 Dig_P3 { get; set; }
-        public Int16 Dig_P4 { get; set; }
-        public Int16 Dig_P5 { get; set; }
-        public Int16 Dig_P6 { get; set; }
-        public Int16 Dig_P7 { get; set; }
-        public Int16 Dig_P8 { get; set; }
-        public Int16 Dig_P9 { get; set; }
+        public ushort Dig_P1 { get; set; }
+        public short Dig_P2 { get; set; }
+        public short Dig_P3 { get; set; }
+        public short Dig_P4 { get; set; }
+        public short Dig_P5 { get; set; }
+        public short Dig_P6 { get; set; }
+        public short Dig_P7 { get; set; }
+        public short Dig_P8 { get; set; }
+        public short Dig_P9 { get; set; }
     }
 
     public class BMP280
