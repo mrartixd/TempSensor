@@ -179,6 +179,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="css\surface_styles.css" />
     <Content Include="img\lightbulb.png" />
     <Content Include="img\lightbulbblack.png" />
     <Content Include="img\mountain.png" />
